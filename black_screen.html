@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    html {
+      cursor: none;
+    }
+    body {
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 90px;
+      height: calc(100vh - 20px);
+    }
+    #clock {
+      color: white;
+    }
+  </style>
+  <body>
+    <div id="clock"></div>
+  </body>
+  <script>
+    var mouseStartedMoving = false;
+    var mouseMoved = false;
+    const MINIMUM_MOUSE_MOVE_TIME = 500;
+    let element = document.getElementsByTagName("html")[0];
+    let hourElement = document.getElementById("clock");
+
+    element.onclick = () => {
+      if (!document.fullscreenElement) {
+        element.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    };
+    setInterval(() => {
+      if (!mouseMoved && mouseStartedMoving) {
+        //Mouse stopped moving
+        //Do CSS change
+        mouseStartedMoving = false;
+        element.style.cursor = "none";
+        hourElement.style.visibility = "hidden";
+      }
+      mouseMoved = false;
+    }, MINIMUM_MOUSE_MOVE_TIME);
+
+    element.onmousemove = function (ev) {
+      mouseStartedMoving = true;
+      mouseMoved = true;
+      element.style.cursor = "default";
+      hourElement.style.visibility = "initial";
+    };
+
+    function updateClock() {
+      // Obtenir la date et l'heure actuelles
+      var date = new Date();
+      var hour = date.getHours();
+      var minute = date.getMinutes();
+      var second = date.getSeconds();
+
+      // Ajouter un zéro devant les nombres inférieurs à 10
+      if (hour < 10) {
+        hour = "0" + hour;
+      }
+      if (minute < 10) {
+        minute = "0" + minute;
+      }
+      if (second < 10) {
+        second = "0" + second;
+      }
+
+      // Construire la chaîne de l'heure au format HH:MM:SS
+      var time = hour + ":" + minute + ":" + second;
+
+      // Mettre à jour le contenu de l'élément de division avec l'heure actuelle
+      document.getElementById("clock").innerHTML = time;
+    }
+
+    // Appeler la fonction updateClock toutes les 1000ms (1 seconde)
+    setInterval(updateClock, 1000);
+  </script>
+</html>
